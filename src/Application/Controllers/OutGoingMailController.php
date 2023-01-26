@@ -4,20 +4,23 @@ declare(strict_types=1);
 
 namespace Application\Controllers;
 
-use Application\Models\OutgoingMail;
-use Laminas\Diactoros\Response\HtmlResponse;
+use Application\Models\DTO\ResponseDTO;
+use Application\Models\ElectronicMail;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class OutGoingMailController
 {
-    public function __construct(private OutgoingMail $outgoingMail) {
+    public function __construct(private ElectronicMail $electronicMail) {
     }
 
     public function get(ServerRequestInterface $request) : ResponseInterface {
-        $dto = $request->getQueryParams()['DTO'];
-        $responseDTO = $this->outgoingMail->get($dto);//тут тоже в идеале настроить одно типовое DTO с кодом ответа и телом
+        //$dto = $request->getQueryParams()['DTO'];
+        //$responseDTO = $this->electronicMail->get($dto);//тут тоже в идеале настроить одно типовое DTO с кодом ответа и телом
+        $responseDTO = new ResponseDTO();
+        $responseDTO->mailNumber = '1';
+        $responseDTO->mailDate = '01.01.2023';
         $response = (new JsonResponse($responseDTO));
         return $response;
 
@@ -25,7 +28,7 @@ class OutGoingMailController
 
     public function add(ServerRequestInterface $request) : ResponseInterface {
         $dto = $request->getParsedBody()['DTO'];
-        $responseDTO = $this->outgoingMail->insert($dto);
+        $responseDTO = $this->electronicMail->insert($dto);
         $response = (new JsonResponse($responseDTO));
         return $response;
     }

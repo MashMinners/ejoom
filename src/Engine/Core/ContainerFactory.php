@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Engine\DI;
+namespace Engine\Core;
 
 use DI\ContainerBuilder;
 use League\Container\Container;

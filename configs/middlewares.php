@@ -1,2 +1,2 @@
 <?php
-$this->lazyMiddleware(\Application\Middleware\MiddlewareOne::class);
+//$this->lazyMiddleware(\Application\Middleware\MiddlewareOne::class);

@@ -3,7 +3,7 @@
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 #2. Инициализация DI контейнера
-$container = \Engine\DI\ContainerFactory::create();
+$container = \Engine\Core\ContainerFactory::create();
 #3. Создание приложения
 $app = $container->get('Application');
 #4. Создание запроса
