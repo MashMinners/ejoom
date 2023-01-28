@@ -17,6 +17,7 @@
         "league/container": "^4.2",
         "php-di/php-di": "^7.0",
         "ext-pdo": "*",
-        "mpdf/mpdf": "^8.1"
+        "mpdf/mpdf": "^8.1",
+        "ramsey/uuid": "^4.7"
     }
 }
