@@ -1,2 +1,2 @@
 # ejoom
-Electronic journal of outgoing mail
+Electronic journal of outgoing and incoming mail and letters
