@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Application\Models;
 
-enum SearchType
+enum SearchType : string
 {
-    case FastSearch;
-    case ByDate;
-    case ByParams;
+    case Fast = 'Fast';
+    case ByDate = 'ByDate';
+    case ByParams = 'ByParams';
 }

@@ -4,39 +4,35 @@ declare(strict_types=1);
 
 namespace Application\Models;
 
-class SearchResult implements \JsonSerializable
+class SearchResult extends BaseDTO implements \JsonSerializable
 {
     //Записи в журнале
-    private string $record_id;
-    private int $letterNumber;
-    private string $letterHeader;
-    private string $registrationDate;
-    private string $additionally;
+    protected string $recordId;
+    protected string $letterNumber;
+    protected string $letterHeader;
+    protected string $registrationDate;
+    protected string $additionally;
 
     //Контрагенты
-    private int $counterpartyId;
-    private string $counterpartyName;
-    private int $counterpartyTypeId;
-    private string $counterpartyTypeName;
+    protected string $counterpartyId;
+    protected string $counterpartyName;
+    protected string $counterpartyTypeId;
+    protected string $counterpartyTypeName;
 
     //Сотрудники организации
-    private int $employeeId;
-    private string $employeeName;
-    private string $employeePhoneNumber;
-    private string $employeeEmail;
-    private int $employeeTypeId;
-    private string $employeeTypeName;
+    protected string $employeeId;
+    protected string $employeeName;
+    protected string $employeePhoneNumber;
+    protected string $employeeEmail;
+    protected string $employeeTypeId;
+    protected string $employeeTypeName;
 
     //Тип записи: 1. email - входящее 2. email - исходящее 3. письмо - входящее 4. письмо исходящее
-    private int $correspondenceTypeId;
-    private string $correspondenceTypeName;
+    protected string $correspondenceTypeId;
+    protected string $correspondenceTypeName;
 
-    public function __construct(array $array){
-
-    }
-
-    private function fill(array $data) : void {
-
+    public function __construct(array $data){
+        $this->init($data);
     }
 
     public function jsonSerialize() : mixed {

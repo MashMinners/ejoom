@@ -7,41 +7,41 @@ namespace Application\Models;
 use Ramsey\Uuid\Uuid;
 
 /**
- *  DTO объект содержащий информацию об одной записи.
+ *  BaseDTO объект содержащий информацию об одной записи.
  *  Операции: 1. добавление, создание записи в журнал, 2. обновление, редактирование записи.
  */
 class Record
 {
     public function __construct(string $json){
-        $this->create($json);
+        $this->init($json);
     }
 
-    private string $id;
+    private string $recordId;
     private int $letterNumber;
     private string $letterHeader;
-    private int $counterparty;
-    private int $counterpartyType;
-    private int $employee;
-    private int $employeeType;
+    private int $counterpartyId;
+    private int $counterpartyTypeId;
+    private int $employeeId;
+    private int $employeeTypeId;
     private string $registrationDate;
-    private int $correspondenceType;
+    private int $correspondenceTypeId;
     private string $additionally;
 
     public function __get(string $name) : string|int {
         return $this->$name;
     }
 
-    private function create(string $json) {
+    private function init(string $json) {
         $DTO = json_decode($json);
-        $this->letterNumber = (int) $DTO['letterNumber'];
+        $this->letterNumber = $DTO['letterNumber'];
         $this->letterHeader = $DTO['letterHeader'];
-        $this->counterparty = (int) $DTO['counterparty'];
-        $this->counterpartyType = (int) $DTO['counterpartyType'];
-        $this->employee = (int) $DTO['employee'];
-        $this->employeeType = (int) $DTO['employeeType'];
+        $this->counterpartyId = $DTO['counterpartyId'];
+        $this->counterpartyTypeId = $DTO['counterpartyTypeId'];
+        $this->employeeId = $DTO['employeeId'];
+        $this->employeeTypeId = $DTO['employeeTypeId'];
         $this->registrationDate = $DTO['registrationDate'];
-        $this->correspondenceType = (int) $DTO['correspondence_type'];
+        $this->correspondenceTypeId = $DTO['correspondenceTypeId'];
         $this->additionally = $DTO['additionally'];
-        $this->id = $DTO['id'] ?? Uuid::uuid4();
+        $this->recordId = $DTO['id'] ?? Uuid::uuid4();
     }
 }
