@@ -16,19 +16,17 @@ class SearchResult extends BaseDTO implements \JsonSerializable
     //Контрагенты
     protected string $counterpartyId;
     protected string $counterpartyName;
-    protected string $counterpartyTypeId;
-    protected string $counterpartyTypeName;
 
     //Сотрудники организации
     protected string $employeeId;
-    protected string $employeeName;
+    protected string $employeeSurname;
+    protected string $employeeFirstName;
+    protected string $employeeSecondName;
     protected string $employeePhoneNumber;
     protected string $employeeEmail;
-    protected string $employeeTypeId;
-    protected string $employeeTypeName;
 
     //Тип записи: 1. email - входящее 2. email - исходящее 3. письмо - входящее 4. письмо исходящее
-    protected string $correspondenceTypeId;
+    protected int $correspondenceTypeId;
     protected string $correspondenceTypeName;
 
     public function __construct(array $data){

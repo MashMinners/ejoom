@@ -11,20 +11,28 @@ class EJournal
     private \PDO $pdo;
     const LIMIT = 10;
 
+    /**
+     * @param IConnector $connector
+     */
     public function __construct(IConnector $connector){
         $this->pdo = $connector::connect();
     }
 
+    /**
+     * @param Search $search
+     * @return ResultCollection
+     */
     private function getRecordsByFastSearch(Search $search) : ResultCollection {
         $query = ("SELECT * FROM ejournal
                    INNER JOIN counterparties ON counterparties.counterparty_id = ejournal.counterparty_id
-                   INNER JOIN counterparty_types ON counterparty_types.counterparty_type_id = ejournal.counterparty_type_id
                    INNER JOIN employees ON employees.employee_id = ejournal.employee_id
-                   INNER JOIN employee_types ON employee_types.employee_type_id = ejournal.employee_type_id
                    INNER JOIN correspondence_types ON correspondence_types.correspondence_type_id = ejournal.correspondence_type_id
-                   WHERE letter_number LIKE '%$search->searchString%' OR letter_header LIKE '%$search->searchString%' LIMIT ").$this::LIMIT;
+                   WHERE (letter_number LIKE '%$search->searchString%' OR letter_header LIKE '%$search->searchString%') 
+                   AND (ejournal.correspondence_type_id = :correspondenceTypeId) LIMIT ").$this::LIMIT;
         $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
+        $stmt->execute([
+            'correspondenceTypeId' => $search->correspondenceTypeId,
+        ]);
         $results = $stmt->fetchAll();
         $collection = new ResultCollection();
         foreach ($results as $result){
@@ -34,7 +42,6 @@ class EJournal
     }
 
     /**
-     * Возвращает результат за период между началом и концом, либо на дату указанную в $startDate
      * Будет исопльзоваться для кнопок "Сегодня", "Вчера", "Неделя" для быстрого поиска писем по этим периодам
      * @param Search $search
      * @return ResultCollection
@@ -42,15 +49,14 @@ class EJournal
     private function getRecordsByDate(Search $search) : ResultCollection {
         $query = ("SELECT * FROM ejournal
                    INNER JOIN counterparties ON counterparties.counterparty_id = ejournal.counterparty_id
-                   INNER JOIN counterparty_types ON counterparty_types.counterparty_type_id = ejournal.counterparty_type_id
                    INNER JOIN employees ON employees.employee_id = ejournal.employee_id
-                   INNER JOIN employee_types ON employee_types.employee_type_id = ejournal.employee_type_id
                    INNER JOIN correspondence_types ON correspondence_types.correspondence_type_id = ejournal.correspondence_type_id
-                   WHERE registration_date BETWEEN :startDate AND :endDate");
+                   WHERE (registration_date BETWEEN :startDate AND :endDate) AND (ejournal.correspondence_type_id = :correspondenceTypeId)");
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([
             'startDate' => $search->startDate,
-            'endDate' => $search->endDate
+            'endDate' => $search->endDate ?? $search->startDate,
+            'correspondenceTypeId' => $search->correspondenceTypeId
         ]);
         $results = $stmt->fetchAll();
         $collection = new ResultCollection();
@@ -61,8 +67,31 @@ class EJournal
     }
 
     private function getRecordsByParams(Search $search) : ResultCollection {
-        //Более серьезный поиск по большему количеству параметров, например за перод для исполнителя
-        //Либо просто для поиск аза больший кастомный период
+        $query = ("SELECT * FROM ejournal
+                   INNER JOIN counterparties ON counterparties.counterparty_id = ejournal.counterparty_id
+                   INNER JOIN employees ON employees.employee_id = ejournal.employee_id
+                   INNER JOIN correspondence_types ON correspondence_types.correspondence_type_id = ejournal.correspondence_type_id
+                   WHERE (letter_number LIKE '%$search->searchString%' OR letter_header LIKE '%$search->searchString%')
+                   AND (ejournal.correspondence_type_id = :correspondenceTypeId)
+                   AND (registration_date BETWEEN :startDate AND :endDate)
+                   AND (ejournal.employee_id LIKE '%$search->employeeId')
+                   AND (ejournal.counterparty_id LIKE '%$search->counterpartyId%')
+                   LIMIT 
+                  ").$this::LIMIT;
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([
+            'correspondenceTypeId' => $search->correspondenceTypeId,
+            'startDate' => $search->startDate,
+            'endDate' => $search->endDate ?? $search->startDate,
+            //'employeeId' => $search->employeeId,
+            //'counterpartyId' => $search->counterpartyId
+        ]);
+        $results = $stmt->fetchAll();
+        $collection = new ResultCollection();
+        foreach ($results as $result){
+            $collection->add(new SearchResult($result));
+        }
+        return $collection;
     }
 
     public function get(Search $search) : ResultCollection {

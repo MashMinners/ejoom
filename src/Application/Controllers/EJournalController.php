@@ -14,6 +14,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class EJournalController
 {
     public function __construct(private EJournal $ejournal) {
+
     }
 
     public function get(ServerRequestInterface $request) : ResponseInterface {
@@ -23,21 +24,21 @@ class EJournalController
     }
 
     public function add(ServerRequestInterface $request) : ResponseInterface {
-        $json = $request->getParsedBody()['BaseDTO'];
+        $json = file_get_contents('php://input');
         $recordId = $this->ejournal->insert(new Record($json));
         $response = (new JsonResponse($recordId));
         return $response;
     }
 
     public function save(ServerRequestInterface $request) : ResponseInterface {
-        $json = $request->getParsedBody()['BaseDTO'];
+        $json = file_get_contents('php://input');
         $recordId = $this->ejournal->insert(new Record($json));
         $response = (new JsonResponse($recordId));
         return $response;
     }
 
     public function delete(ServerRequestInterface $request) : ResponseInterface {
-
+        $json = file_get_contents('php://input');
     }
 
 }

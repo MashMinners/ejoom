@@ -20,9 +20,7 @@ class Record
     private int $letterNumber;
     private string $letterHeader;
     private int $counterpartyId;
-    private int $counterpartyTypeId;
     private int $employeeId;
-    private int $employeeTypeId;
     private string $registrationDate;
     private int $correspondenceTypeId;
     private string $additionally;
@@ -36,9 +34,7 @@ class Record
         $this->letterNumber = $DTO['letterNumber'];
         $this->letterHeader = $DTO['letterHeader'];
         $this->counterpartyId = $DTO['counterpartyId'];
-        $this->counterpartyTypeId = $DTO['counterpartyTypeId'];
         $this->employeeId = $DTO['employeeId'];
-        $this->employeeTypeId = $DTO['employeeTypeId'];
         $this->registrationDate = $DTO['registrationDate'];
         $this->correspondenceTypeId = $DTO['correspondenceTypeId'];
         $this->additionally = $DTO['additionally'];

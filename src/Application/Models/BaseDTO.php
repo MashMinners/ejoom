@@ -8,7 +8,7 @@ use Engine\Utilities\StringFormatter;
 
 class BaseDTO
 {
-    protected function init(array|string $data) : void {
+    protected function init(array|string|int $data) : void {
         if (is_string($data)){
             $data = json_decode($data);
         }
