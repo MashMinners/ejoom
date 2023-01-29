@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Application\Controllers;
 
-use Application\Models\EJournal;
-use Application\Models\Record;
-use Application\Models\Search;
+use Application\Models\EJournal\EJournal;
+use Application\Models\EJournal\Record;
+use Application\Models\EJournal\Search;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

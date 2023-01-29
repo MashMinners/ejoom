@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Application\Models;
+namespace Application\Models\EJournal;
 
-use Ramsey\Uuid\Uuid;
+use Application\Models\BaseDTO;
 
 /**
  *  BaseDTO объект содержащий информацию об одной записи.

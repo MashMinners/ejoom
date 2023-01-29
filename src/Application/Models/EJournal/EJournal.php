@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Application\Models;
+namespace Application\Models\EJournal;
 
 use Engine\Database\IConnector;
 use Ramsey\Uuid\Uuid;

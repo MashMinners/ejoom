@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Application\Models;
+namespace Application\Models\EJournal;
 
 enum SearchType : string
 {

@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Application\Models;
+namespace Application\Models\EJournal;
+
+use Application\Models\BaseDTO;
 
 class SearchResult extends BaseDTO implements \JsonSerializable
 {

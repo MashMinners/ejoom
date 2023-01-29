@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Application\Models;
+namespace Application\Models\EJournal;
 
 class ResultCollection implements \JsonSerializable
 {
-    private array $results = [];
+    private array $results;
 
     public function add(SearchResult $searchResult){
         $this->results[] = $searchResult;
