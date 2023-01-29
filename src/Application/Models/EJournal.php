@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Application\Models;
 
 use Engine\Database\IConnector;
+use Ramsey\Uuid\Uuid;
 
 class EJournal
 {
@@ -42,7 +43,7 @@ class EJournal
     }
 
     /**
-     * Будет исопльзоваться для кнопок "Сегодня", "Вчера", "Неделя" для быстрого поиска писем по этим периодам
+     * Будет использоваться для кнопок "Сегодня", "Вчера", "Неделя" для быстрого поиска писем по этим периодам
      * @param Search $search
      * @return ResultCollection
      */
@@ -67,25 +68,32 @@ class EJournal
     }
 
     private function getRecordsByParams(Search $search) : ResultCollection {
+        //Первоначальный
         $query = ("SELECT * FROM ejournal
                    INNER JOIN counterparties ON counterparties.counterparty_id = ejournal.counterparty_id
                    INNER JOIN employees ON employees.employee_id = ejournal.employee_id
                    INNER JOIN correspondence_types ON correspondence_types.correspondence_type_id = ejournal.correspondence_type_id
                    WHERE (letter_number LIKE '%$search->searchString%' OR letter_header LIKE '%$search->searchString%')
-                   AND (ejournal.correspondence_type_id = :correspondenceTypeId)
-                   AND (registration_date BETWEEN :startDate AND :endDate)
-                   AND (ejournal.employee_id LIKE '%$search->employeeId')
-                   AND (ejournal.counterparty_id LIKE '%$search->counterpartyId%')
-                   LIMIT 
-                  ").$this::LIMIT;
+                   AND (ejournal.correspondence_type_id = :correspondenceTypeId) ");
+        $queryBuilder = new \Engine\Database\QueryBuilder\QueryBuilder($query);
+        $queryBuilder->addKey('correspondenceTypeId', $search->correspondenceTypeId);
+        if (!is_null($search->startDate)){
+            $queryBuilder->add('AND (registration_date BETWEEN :startDate AND :endDate) ');
+            $queryBuilder->addKey('startDate', $search->startDate);
+            $queryBuilder->addKey('endDate', $search->endDate ?? $search->startDate);
+        }
+        if (!is_null($search->employeeId)){
+            $queryBuilder->add('AND (ejournal.employee_id = :employeeId) ');
+            $queryBuilder->addKey('employeeId', $search->employeeId);
+        }
+        if (!is_null($search->counterpartyId)){
+            $queryBuilder->add('AND (ejournal.counterparty_id = :counterpartyId) ');
+            $queryBuilder->addKey('counterpartyId', $search->counterpartyId);
+        }
+        $queryBuilder->limit($this::LIMIT);
+        $query = $queryBuilder->query();
         $stmt = $this->pdo->prepare($query);
-        $stmt->execute([
-            'correspondenceTypeId' => $search->correspondenceTypeId,
-            'startDate' => $search->startDate,
-            'endDate' => $search->endDate ?? $search->startDate,
-            //'employeeId' => $search->employeeId,
-            //'counterpartyId' => $search->counterpartyId
-        ]);
+        $stmt->execute($queryBuilder->keys());
         $results = $stmt->fetchAll();
         $collection = new ResultCollection();
         foreach ($results as $result){
@@ -103,33 +111,55 @@ class EJournal
     }
 
     public function insert(Record $record) : string {
-        $query = ("INSERT INTO ejournal (id, letter_number, letter_header, counterparty
-                                employee, registration_date, correspondence_type, additionally, counterparty_type, 
-                                employee_type)
-                   VALUES (:id, :letterNumber, :letterHeader, :counterparty, :employee, :registrationDate, 
-                            :correspondenceType, :additionally, :counterpartyType, :employeeType)");
+        $query = ("INSERT INTO ejournal (record_id, letter_number, letter_header, counterparty_id,
+                               employee_id, registration_date, correspondence_type_id, additionally)
+                   VALUES (:recordId, :letterNumber, :letterHeader, :counterpartyId, :employeeId, :registrationDate, 
+                            :correspondenceTypeId, :additionally)");
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([
-            'id'=>$record->id,
+            'recordId'=>$recordId = Uuid::uuid4()->toString(),
             'letterNumber'=>$record->letterNumber,
-            'letterHeader'=>$record->letterHEader,
-            'counterparty'=>$record->counterparty,
-            'employee'=>$record->employee,
+            'letterHeader'=>$record->letterHeader,
+            'counterpartyId'=>$record->counterpartyId,
+            'employeeId'=>$record->employeeId,
             'registrationDate'=>$record->registrationDate,
-            'correspondenceType'=>$record->correspondenceType,
+            'correspondenceTypeId'=>$record->correspondenceTypeId,
             'additionally'=>$record->additionally,
-            'counterpartyType'=>$record->counterpartyType,
-            'employeeType'=>$record->employeeType
         ]);
-        return $record->id;
+        return $recordId;
     }
 
     public function update(Record $record) : string {
-        return $record->id;
+        $query = ("UPDATE ejournal 
+                   SET letter_number = :letterNumber,
+                       letter_header = :letterHeader,
+                       counterparty_id = :counterpartyId,
+                       employee_id = :employeeId,
+                       registration_date = :registrationDate,
+                       correspondence_type_id = :correspondenceTypeId,
+                       additionally = :additionally
+                   WHERE record_id = :recordId
+                  ");
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([
+            'recordId'=>$record->recordId,
+            'letterNumber'=>$record->letterNumber,
+            'letterHeader'=>$record->letterHeader,
+            'counterpartyId'=>$record->counterpartyId,
+            'employeeId'=>$record->employeeId,
+            'registrationDate'=>$record->registrationDate,
+            'correspondenceTypeId'=>$record->correspondenceTypeId,
+            'additionally'=>$record->additionally
+        ]);
+        return $record->recordId;
     }
 
-    public function delete(array $ids) {
-
+    public function delete(string $json) : bool {
+        $std = json_decode($json);
+        $query = ("DELETE FROM ejournal WHERE record_id = :recordId");
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute(['recordId'=>$std->recordId]);
+        return true;
     }
 
 }

@@ -1,5 +1,5 @@
 <?php
 $this->get('/', '\Application\Controllers\EJournalController::get');
-$this->post('/', 'Application\Controllers\OutGoingMailController::add');
-$this->put('/', 'Application\Controllers\OutGoingMailController::save');
-$this->delete('/', 'Application\Controllers\OutGoingMailController::delete');
+$this->post('/', '\Application\Controllers\EJournalController::add');
+$this->put('/', '\Application\Controllers\EJournalController::save');
+$this->delete('/', '\Application\Controllers\EJournalController::remove');

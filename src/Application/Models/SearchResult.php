@@ -16,6 +16,7 @@ class SearchResult extends BaseDTO implements \JsonSerializable
     //Контрагенты
     protected string $counterpartyId;
     protected string $counterpartyName;
+    protected string $counterpartyDescription;
 
     //Сотрудники организации
     protected string $employeeId;

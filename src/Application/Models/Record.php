@@ -10,34 +10,30 @@ use Ramsey\Uuid\Uuid;
  *  BaseDTO объект содержащий информацию об одной записи.
  *  Операции: 1. добавление, создание записи в журнал, 2. обновление, редактирование записи.
  */
-class Record
+class Record extends BaseDTO
 {
+    protected string|null $recordId;
+    protected string|null $letterNumber;
+    protected string|null $letterHeader;
+    protected string|null $counterpartyId;
+    protected string|null $employeeId;
+    protected string|null $registrationDate;
+    protected int|null $correspondenceTypeId;
+    protected string|null $additionally;
+
+    /**
+     * @param string $json
+     */
     public function __construct(string $json){
         $this->init($json);
     }
 
-    private string $recordId;
-    private int $letterNumber;
-    private string $letterHeader;
-    private int $counterpartyId;
-    private int $employeeId;
-    private string $registrationDate;
-    private int $correspondenceTypeId;
-    private string $additionally;
-
+    /**
+     * @param string $name
+     * @return string|int
+     */
     public function __get(string $name) : string|int {
         return $this->$name;
     }
 
-    private function init(string $json) {
-        $DTO = json_decode($json);
-        $this->letterNumber = $DTO['letterNumber'];
-        $this->letterHeader = $DTO['letterHeader'];
-        $this->counterpartyId = $DTO['counterpartyId'];
-        $this->employeeId = $DTO['employeeId'];
-        $this->registrationDate = $DTO['registrationDate'];
-        $this->correspondenceTypeId = $DTO['correspondenceTypeId'];
-        $this->additionally = $DTO['additionally'];
-        $this->recordId = $DTO['id'] ?? Uuid::uuid4();
-    }
 }

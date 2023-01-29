@@ -32,13 +32,16 @@ class EJournalController
 
     public function save(ServerRequestInterface $request) : ResponseInterface {
         $json = file_get_contents('php://input');
-        $recordId = $this->ejournal->insert(new Record($json));
+        $recordId = $this->ejournal->update(new Record($json));
         $response = (new JsonResponse($recordId));
         return $response;
     }
 
-    public function delete(ServerRequestInterface $request) : ResponseInterface {
+    public function remove(ServerRequestInterface $request) : ResponseInterface {
         $json = file_get_contents('php://input');
+        $result = $this->ejournal->delete($json);
+        $response = (new JsonResponse($result));
+        return $response;
     }
 
 }
