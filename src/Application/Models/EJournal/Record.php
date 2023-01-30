@@ -25,6 +25,10 @@ class Record extends BaseDTO
      * @param string $json
      */
     public function __construct(string $json){
+        $properties = get_class_vars(self::class);
+        foreach ($properties as $name => $value){
+            $this->$name = $value;
+        }
         $this->init($json);
     }
 
@@ -32,7 +36,7 @@ class Record extends BaseDTO
      * @param string $name
      * @return string|int
      */
-    public function __get(string $name) : string|int {
+    public function __get(string $name) : string|int|null {
         return $this->$name;
     }
 
