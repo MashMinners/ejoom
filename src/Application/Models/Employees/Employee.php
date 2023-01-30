@@ -8,18 +8,22 @@ use Application\Models\BaseDTO;
 
 class Employee extends BaseDTO implements \JsonSerializable
 {
-    protected string $employeeId;
-    protected string $employeeSurname;
-    protected string $employeeFirstName;
-    protected string $employeeSecondName;
-    protected string $employeePhoneNumber;
-    protected string $employeeEmail;
+    protected string|null $employeeId;
+    protected string|null $employeeSurname;
+    protected string|null $employeeFirstName;
+    protected string|null $employeeSecondName;
+    protected string|null $employeePhoneNumber;
+    protected string|null $employeeEmail;
 
-    public function __construct(array $data){
+    public function __construct(array|string $data){
+        $properties = get_class_vars(self::class);
+        foreach ($properties as $name => $value){
+            $this->$name = $value;
+        }
         $this->init($data);
     }
 
-    public function __get(string $name) : string|int {
+    public function __get(string $name) : string|int|null {
         return $this->$name;
     }
 

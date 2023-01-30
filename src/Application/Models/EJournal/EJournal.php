@@ -142,6 +142,7 @@ class EJournal
                   ");
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([
+            'recordId'=>$record->recordId,
             'letterNumber'=>$record->letterNumber,
             'letterHeader'=>$record->letterHeader,
             'counterpartyId'=>$record->counterpartyId,
