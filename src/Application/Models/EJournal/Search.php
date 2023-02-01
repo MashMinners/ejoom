@@ -10,7 +10,7 @@ class Search extends BaseDTO
 {
     //Переключатели параметра поиска
     protected SearchType|null $searchType;
-    protected int|null $correspondenceTypeId;
+    protected int|null|string $correspondenceTypeId;
     //Быстрый поиск по номеру или заголовку записи
     protected string|null $searchString;
     //Усиленный поиск по параметрам
@@ -19,22 +19,24 @@ class Search extends BaseDTO
     protected string|null $employeeId;
     protected string|null $counterpartyId;
 
-    public function __construct(string $json){
+    public function __construct(string|array $json){
         $this->make($json);
     }
 
-    private function make(string $json) : void {
+    private function make(string|array $data) : void {
         //Установка всех значений в null
         $properties = get_class_vars(self::class);
         foreach ($properties as $name => $value){
             $this->$name = $value;
         }
         //Заполнение свойств
-        $data = json_decode($json);
-        $searchType = SearchType::from($data->searchType);
-        $array = (array) $data;
-        unset($array['searchType']);
-        $this->init($array);
+        //$data = json_decode($data);
+        //$searchType = SearchType::from($data->searchType);
+        $searchType = SearchType::from($data['searchType']);
+        //$data = (array) $data;
+        unset($data['searchType']);
+        unset($data['XDEBUG_SESSION_START']);
+        $this->init($data);
         $this->searchType = $searchType;
     }
 

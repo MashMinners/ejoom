@@ -18,8 +18,9 @@ class EJournalController
     }
 
     public function get(ServerRequestInterface $request) : ResponseInterface {
-        $json = file_get_contents('php://input');
-        $collection = $this->ejournal->get(new Search($json));
+        $data = $request->getQueryParams();//file_get_contents('php://input');
+        //$data = file_get_contents('php://input');
+        $collection = $this->ejournal->get(new Search($data));
         return new JsonResponse($collection);
     }
 
@@ -38,8 +39,9 @@ class EJournalController
     }
 
     public function remove(ServerRequestInterface $request) : ResponseInterface {
-        $json = file_get_contents('php://input');
-        $result = $this->ejournal->delete($json);
+        //$json = file_get_contents('php://input');
+        $data = $request->getQueryParams();//
+        $result = $this->ejournal->delete($data);
         $response = (new JsonResponse($result));
         return $response;
     }

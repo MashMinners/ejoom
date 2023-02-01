@@ -154,11 +154,11 @@ class EJournal
         return $record->recordId;
     }
 
-    public function delete(string $json) : bool {
-        $std = json_decode($json);
+    public function delete(array $data) : bool {
+        //$std = json_decode($json);
         $query = ("DELETE FROM ejournal WHERE record_id = :recordId");
         $stmt = $this->pdo->prepare($query);
-        $stmt->execute(['recordId'=>$std->recordId]);
+        $stmt->execute(['recordId'=>$data['recordId']]);
         return true;
     }
 
