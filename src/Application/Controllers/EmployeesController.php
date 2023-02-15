@@ -17,8 +17,8 @@ class EmployeesController
     }
 
     public function get(ServerRequestInterface $request) : ResponseInterface {
-        $json = file_get_contents('php://input');
-        $collection = $this->employeesManager->get($json);
+        $query = $request->getQueryParams()['search'];
+        $collection = $this->employeesManager->get($query   );
         return (new JsonResponse($collection));
     }
 

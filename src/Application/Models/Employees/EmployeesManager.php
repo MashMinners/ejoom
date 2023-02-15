@@ -15,9 +15,7 @@ class EmployeesManager
         $this->pdo = $connector::connect();
     }
 
-    public function get(string $json) : EmployeesCollection{
-        $std = json_decode($json);
-        $search = $std->search;
+    public function get(string $search) : EmployeesCollection{
         $query = ("SELECT * FROM employees 
                    WHERE CONCAT(employee_surname, ' ', employee_first_name) LIKE '%$search%'");
         $stmt = $this->pdo->prepare($query);
