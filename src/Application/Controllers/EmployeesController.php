@@ -18,7 +18,7 @@ class EmployeesController
 
     public function get(ServerRequestInterface $request) : ResponseInterface {
         $query = $request->getQueryParams()['search'];
-        $collection = $this->employeesManager->get($query   );
+        $collection = $this->employeesManager->get($query);
         return (new JsonResponse($collection));
     }
 

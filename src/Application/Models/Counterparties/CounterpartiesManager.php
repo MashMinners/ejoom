@@ -13,9 +13,7 @@ class CounterpartiesManager
         $this->pdo = $connector::connect();
     }
 
-    public function get(string $json) : CounterpartiesCollection{
-        $std = json_decode($json);
-        $search = $std->search;
+    public function get(string $search) : CounterpartiesCollection{
         $query = ("SELECT * FROM counterparties 
                    WHERE counterparties.counterparty_name LIKE '%$search%'");
         $stmt = $this->pdo->prepare($query);

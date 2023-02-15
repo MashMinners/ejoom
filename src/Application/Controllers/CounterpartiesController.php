@@ -17,8 +17,8 @@ class CounterpartiesController
     }
 
     public function get(ServerRequestInterface $request) : ResponseInterface {
-        $json = file_get_contents('php://input');
-        $collection = $this->counterpartiesManager->get($json);
+        $query = $request->getQueryParams()['search'];
+        $collection = $this->counterpartiesManager->get($query);
         return (new JsonResponse($collection));
     }
 
