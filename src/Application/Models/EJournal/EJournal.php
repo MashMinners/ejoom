@@ -90,6 +90,7 @@ class EJournal
             $queryBuilder->add('AND (ejournal.counterparty_id = :counterpartyId) ');
             $queryBuilder->addKey('counterpartyId', $search->counterpartyId);
         }
+        $queryBuilder->orderBy('registration_date');
         $queryBuilder->limit($this::LIMIT);
         $query = $queryBuilder->query();
         $stmt = $this->pdo->prepare($query);

@@ -20,8 +20,12 @@ class QueryBuilder
         $this->query .= $sql;
     }
 
+    public function orderBy(string $field, string $direction = 'DESC') : void {
+        $this->query .= 'ORDER BY '.$field.' '.$direction;
+    }
+
     public function limit(int $limit) : void {
-        $this->query .= 'LIMIT '.$limit;
+        $this->query .= ' LIMIT '.$limit;
     }
 
     public function addKey(string $key, string|int|null $value) {
